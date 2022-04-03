@@ -17,9 +17,7 @@ test:
   username: postgres
   password: postgres
   host: db
+  url: <%= ENV['DATABASE_URL'] %>
 production:
   <<: *default
-  database: inbox_production
-  username: inbox
-  password: <%= ENV["INBOX_DATABASE_PASSWORD"] %>
-  host: db
+  url: <%= ENV['DATABASE_URL'] %>
