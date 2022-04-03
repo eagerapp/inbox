@@ -1,0 +1,41 @@
+version: "3.6"
+networks:
+  backend:
+  frontend:
+services:
+  db:
+    image: postgres:14.2-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - backend
+  redis:
+    image: redis:6.2-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+  api:
+    build: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      DB: postgresql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      BUNDLE_GEMFILE: /app/Gemfile
+    command: script/docker-dev-start-web.sh
+    networks:
+      - backend
+      - frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
